@@ -3,9 +3,9 @@ from flask import Flask
 from flask import request
 from flask import Response
 
-SLOTS = {'19h', '19h30', '20h', '20h30', '21h', '21h30'}
+SLOTS: Set[str] = {'19h', '19h30', '20h', '20h30', '21h', '21h30'}
 
-restaurants = {
+restaurants: Dict[str, Set[str]] = {
     'Coin moldu': SLOTS.copy(),
     'Falafel Fix': SLOTS.copy(),
     'Station Ramen': SLOTS.copy(),
@@ -18,7 +18,6 @@ restaurants = {
     'Veggie Wonderland': SLOTS.copy(),
     'Kebab Capital': SLOTS.copy()
 }
-
 
 app = Flask(__name__)
 
