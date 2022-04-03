@@ -47,7 +47,7 @@ for rid in RESTAURANT_IDS:
 app = Flask(__name__)
 
 
-def check_dto(r_id: RestaurantId, slot: str, request: Request) -> Tuple[str, str]:
+def check_dto(request: Request) -> Tuple[str, str]:
     '''Raise an error if given dto is malformed. '''
 
     if not isinstance(request.json, dict):
@@ -102,7 +102,7 @@ def book(r_id: RestaurantId, slot: str) -> str:
     elif not slot in restaurants[r_id]['slots']:
         abort(400, 'Slot {} is not available'.format(slot))
 
-    name, phone = check_dto(r_id, slot, request)
+    name, phone = check_dto(request)
 
     restaurants[r_id]['bookings'].append(
         {'slot': slot, 'name': name, 'phone': phone})
