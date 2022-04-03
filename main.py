@@ -28,7 +28,7 @@ restaurants: Dict[RestaurantId, RestaurantData] = {}
 
 for rid in RESTAURANT_IDS:
     restaurants[rid] = {
-        'name': rid,
+        'name': rid.replace('_', ' ').capitalize(),
         'slots': SLOTS.copy()
     }
 
