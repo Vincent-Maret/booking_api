@@ -74,7 +74,7 @@ def get_restaurant_slots(r_id: RestaurantId) -> Dict[str, List[str]]:
 
 
 @app.route('/restaurant/<r_id>/book/<slot>', methods=['POST'])
-def book_slot(r_id: RestaurantId, slot: str):
+def book_slot(r_id: RestaurantId, slot: str) -> str:
     '''Book given slot for given restaurant'''
     if not r_id in RESTAURANT_IDS:
         abort(404, 'Restaurant id {} do not exist'.format(r_id))
