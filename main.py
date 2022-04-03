@@ -45,8 +45,6 @@ for rid in RESTAURANT_IDS:
         'bookings': []
     }
 
-app = Flask(__name__)
-
 
 def check_dto(request: Request) -> Tuple[str, str]:
     '''Raise an error if given dto is malformed. '''
@@ -66,6 +64,9 @@ def check_dto(request: Request) -> Tuple[str, str]:
         abort(400, 'Malformated phone')
 
     return (name, phone)
+
+
+app = Flask(__name__)
 
 
 @app.errorhandler(Exception)
@@ -119,7 +120,8 @@ def update_booking(r_id: RestaurantId, slot: str) -> str:
 
     name, phone = check_dto(request)
     booking_index = next(
-        (i for i, booking in enumerate(restaurants[r_id]['bookings']) if booking['slot'] == slot), None)
+        (i for i, booking in enumerate(restaurants[r_id]['bookings'])
+         if booking['slot'] == slot), None)
 
     if booking_index is None:
         abort(404, 'Can not update a booking that not exist. Please create it instead')
@@ -138,7 +140,8 @@ def delete_booking(r_id: RestaurantId, slot: str) -> str:
         abort(404, 'Restaurant id {} do not exist'.format(r_id))
 
     booking_index = next(
-        (i for i, booking in enumerate(restaurants[r_id]['bookings']) if booking['slot'] == slot), None)
+        (i for i, booking in enumerate(restaurants[r_id]['bookings'])
+         if booking['slot'] == slot), None)
 
     if booking_index is None:
         abort(404, 'Can not delete booking. Slot {} is not booked'.format(slot))
