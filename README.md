@@ -5,4 +5,4 @@ A fake restaurant booking API implementing HATEOAS
 ## Linters used
 
 - pylint
-- mypu
+- mypy
