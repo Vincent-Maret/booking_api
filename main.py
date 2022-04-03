@@ -58,7 +58,7 @@ for rid in RESTAURANT_IDS:
 # Helpers
 #######################################
 def check_dto(request: Request) -> Tuple[str, str]:
-    '''Raise an error if given dto is malformed. '''
+    '''Raise an error if given dto is malformed.'''
     if not isinstance(request.json, dict):
         abort(400, 'Request format must be json')
     elif not 'name' in request.json:
