@@ -111,5 +111,25 @@ def book(r_id: RestaurantId, slot: str) -> str:
     return 'Slot {} booked'.format(slot)
 
 
+@app.route('/restaurant/<r_id>/book/<slot>', methods=['PUT'])
+def update_booking(r_id: RestaurantId, slot: str) -> str:
+    '''Book given slot for given restaurant'''
+    if not r_id in RESTAURANT_IDS:
+        abort(404, 'Restaurant id {} do not exist'.format(r_id))
+
+    name, phone = check_dto(request)
+    booking_index = next(
+        (i for i, booking in enumerate(restaurants[r_id]['bookings']) if booking['slot'] == slot), None)
+
+    if booking_index is None:
+        abort(404, 'Can not update a booking that not exist. Please create it instead')
+
+    del restaurants[r_id]['bookings'][booking_index]
+    restaurants[r_id]['bookings'].append(
+        {'slot': slot, 'name': name, 'phone': phone})
+
+    return 'Booking on Slot {} updated'.format(slot)
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
