@@ -43,10 +43,13 @@ def get_restaurant_list() -> Dict[str, List[str]]:
     }
 
 
-@app.route('/<restaurantId>/availableSlots', methods=['GET'])
-def get_restaurant_slots(restaurantId: str) -> Dict[str, List[str]]:
+@app.route('/<r_id>/availableSlots', methods=['GET'])
+def get_restaurant_slots(r_id: RestaurantId) -> Dict[str, List[str]]:
     '''Return available slots for given restaurant'''
-    return {'slots': list(restaurants[restaurantId])}
+    if not r_id in RESTAURANT_IDS:
+        abort(404, 'Restaurant id {} do not exist'.format(r_id))
+
+    return {'slots': list(restaurants[r_id]["slots"])}
 
 
 if __name__ == '__main__':
