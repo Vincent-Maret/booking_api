@@ -131,5 +131,23 @@ def update_booking(r_id: RestaurantId, slot: str) -> str:
     return 'Booking on Slot {} updated'.format(slot)
 
 
+@app.route('/restaurant/<r_id>/book/<slot>', methods=['DELETE'])
+def delete_booking(r_id: RestaurantId, slot: str) -> str:
+    '''Delete booking on given slot for given restaurant and make it available again.'''
+    if not r_id in RESTAURANT_IDS:
+        abort(404, 'Restaurant id {} do not exist'.format(r_id))
+
+    booking_index = next(
+        (i for i, booking in enumerate(restaurants[r_id]['bookings']) if booking['slot'] == slot), None)
+
+    if booking_index is None:
+        abort(404, 'Can not delete booking. Slot {} is not booked'.format(slot))
+
+    del restaurants[r_id]['bookings'][booking_index]
+    restaurants[r_id]['slots'].add(slot)
+
+    return 'Booking deleted'
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
