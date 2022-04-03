@@ -52,7 +52,7 @@ def get_restaurant_list() -> Dict[str, List[str]]:
     }
 
 
-@app.route('/<r_id>/availableSlots', methods=['GET'])
+@app.route('/restaurant/<r_id>/availableSlots', methods=['GET'])
 def get_restaurant_slots(r_id: RestaurantId) -> Dict[str, List[str]]:
     '''Return available slots for given restaurant'''
     if not r_id in RESTAURANT_IDS:
