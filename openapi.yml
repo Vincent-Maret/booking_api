@@ -1,0 +1,393 @@
+openapi: 3.0.1
+info:
+  title: A fake restaurant booking api
+  description: defaultDescription
+  version: '0.1'
+servers:
+  - url: http://localhost:8080
+paths:
+  /restaurants:
+    get:
+      description: Get a list of available restaurants and related endpoints to get available slots
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restaurants:
+                    type: array
+                    items:
+                      type: string
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                        rel:
+                          type: string
+                        href:
+                          type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "links": [
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for coin_moldu"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/falafel_fix/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for falafel_fix"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/station_ramen/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for station_ramen"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/amritsari_masala/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for amritsari_masala"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/pupsicle/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for pupsicle"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/50_nuances_de_caf\u00e9/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for 50_nuances_de_caf\u00e9"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/au-del\u00e0_des_tacos/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for au-del\u00e0_des_tacos"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/la_barre_de_smoothie/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for la_barre_de_smoothie"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/loki\u2019s_lounge/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for loki\u2019s_lounge"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/veggie_wonderland/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for veggie_wonderland"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/kebab_capital/availableSlots", 
+                          "method": "GET", 
+                          "rel": "Retrieve slots for kebab_capital"
+                        }
+                      ], 
+                      "restaurants": [
+                        "Coin moldu", 
+                        "Falafel fix", 
+                        "Station ramen", 
+                        "Amritsari masala", 
+                        "Pupsicle", 
+                        "50 nuances de caf\u00e9", 
+                        "Au-del\u00e0 des tacos", 
+                        "La barre de smoothie", 
+                        "Loki\u2019s lounge", 
+                        "Veggie wonderland", 
+                        "Kebab capital"
+                      ]
+                    }
+      servers:
+        - url: http://localhost:8080
+    servers:
+      - url: http://localhost:8080
+  /restaurant/{restaurant_id}/availableSlots:
+    get:
+      parameters:
+        - in: path
+          name: restaurant_id
+          required: true
+          schema:
+            type: string
+          description: The restaurant id
+      description: get available slots for given restaurant and related endpoints to book on
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slots:
+                    type: array
+                    items:
+                      type: string
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                        rel:
+                          type: string
+                        href:
+                          type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "links": [
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/19h30", 
+                          "method": "POST", 
+                          "rel": "Book slot 19h30"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/21h30", 
+                          "method": "POST", 
+                          "rel": "Book slot 21h30"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/20h30", 
+                          "method": "POST", 
+                          "rel": "Book slot 20h30"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/19h", 
+                          "method": "POST", 
+                          "rel": "Book slot 19h"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/21h", 
+                          "method": "POST", 
+                          "rel": "Book slot 21h"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/20h", 
+                          "method": "POST", 
+                          "rel": "Book slot 20h"
+                        }
+                      ], 
+                      "slots": [
+                        "19h30", 
+                        "21h30", 
+                        "20h30", 
+                        "19h", 
+                        "21h", 
+                        "20h"
+                      ]
+                    }
+      servers:
+        - url: http://localhost:8080
+    servers:
+      - url: http://localhost:8080
+  /restaurant/{restaurant_id}/book/{slot}:
+    parameters:
+      - in: path
+        name: restaurant_id
+        required: true
+        schema:
+          type: string
+        description: The restaurant id
+      - in: path
+        name: slot
+        required: true
+        schema:
+          type: string
+        description: The slot to book on
+    put:
+      description: Auto generated using Swagger Inspector
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                name:
+                  type: string
+            examples:
+              '0':
+                value: |-
+                  {
+                      "name": "foo",
+                      "phone": "0600000000"
+                  }
+              '1':
+                value: |-
+                  {
+                      "name": "foo",
+                      "phone": "0600000000"
+                  }
+              '2':
+                value: |-
+                  {
+                      "name": "Foo",
+                      "phone": "0600000000"
+                  }
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                        rel:
+                          type: string
+                        href:
+                          type: string
+                  message:
+                    type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "links": [
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/20h30", 
+                          "method": "PUT", 
+                          "rel": "Update booking for 20h30 at coin_moldu"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/20h30", 
+                          "method": "DELETE", 
+                          "rel": "Delete booking for 20h30 at coin_moldu"
+                        }
+                      ], 
+                      "message": "Booking on Slot 20h30 updated"
+                    }
+      servers:
+        - url: http://localhost:8080
+    post:
+      description: Auto generated using Swagger Inspector
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                name:
+                  type: string
+            examples:
+              '0':
+                value: |-
+                  {
+                      "name": "foo",
+                      "phone": "0600000000"
+                  }
+              '1':
+                value: |-
+                  {
+                      "name": "foo",
+                      "phone": "0600000000"
+                  }
+              '2':
+                value: |-
+                  {
+                      "name": "Foo",
+                      "phone": "0600000000"
+                  }
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                        rel:
+                          type: string
+                        href:
+                          type: string
+                  message:
+                    type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "links": [
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/20h30", 
+                          "method": "PUT", 
+                          "rel": "Update booking for 20h30 at coin_moldu"
+                        }, 
+                        {
+                          "href": "http://localhost:8080/restaurant/coin_moldu/book/20h30", 
+                          "method": "DELETE", 
+                          "rel": "Delete booking for 20h30 at coin_moldu"
+                        }
+                      ], 
+                      "message": "Slot 20h30 booked"
+                    }
+      servers:
+        - url: http://localhost:8080
+    delete:
+      description: Auto generated using Swagger Inspector
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                        rel:
+                          type: string
+                        href:
+                          type: string
+                  message:
+                    type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "links": [
+                        {
+                          "href": "http://localhost:8080/restaurants", 
+                          "method": "GET", 
+                          "rel": "Get restaurant list"
+                        }
+                      ], 
+                      "message": "Booking on Slot 20h30 deleted"
+                    }
+      servers:
+        - url: http://localhost:8080
+    servers:
+      - url: http://localhost:8080
