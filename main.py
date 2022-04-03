@@ -1,32 +1,45 @@
-from typing import List, Set, Dict, Tuple, Optional, Union
-from flask import Flask
-from flask import request
-from flask import Response
+from typing import List, Set, Dict, Tuple, Optional, Union, Literal, TypedDict, get_args
+from flask import Flask, abort
+
+
+RestaurantId = Literal['coin_moldu',
+                       'falafel_fix',
+                       'station_ramen',
+                       'amritsari_masala',
+                       'pupsicle',
+                       '50_nuances_de_café',
+                       'au-delà_des_tacos',
+                       'la_barre_de_smoothie',
+                       'loki’s_lounge',
+                       'veggie_wonderland',
+                       'kebab_capital']
+
+
+class RestaurantData(TypedDict):
+    '''Restaurant data type'''
+    name: str
+    slots: Set[str]
+
 
 SLOTS: Set[str] = {'19h', '19h30', '20h', '20h30', '21h', '21h30'}
+RESTAURANT_IDS = get_args(RestaurantId)
 
-restaurants: Dict[str, Set[str]] = {
-    'Coin moldu': SLOTS.copy(),
-    'Falafel Fix': SLOTS.copy(),
-    'Station Ramen': SLOTS.copy(),
-    'Amritsari Masala': SLOTS.copy(),
-    'Pupsicle': SLOTS.copy(),
-    '50 nuances de café': SLOTS.copy(),
-    'Au-delà des tacos': SLOTS.copy(),
-    'La barre de smoothie': SLOTS.copy(),
-    'Loki’s Lounge': SLOTS.copy(),
-    'Veggie Wonderland': SLOTS.copy(),
-    'Kebab Capital': SLOTS.copy()
-}
+restaurants: Dict[RestaurantId, RestaurantData] = {}
+
+for rid in RESTAURANT_IDS:
+    restaurants[rid] = {
+        'name': rid,
+        'slots': SLOTS.copy()
+    }
 
 app = Flask(__name__)
 
 
 @app.route('/restaurants', methods=['GET'])
 def get_restaurant_list() -> Dict[str, List[str]]:
-    '''Return a list of restaurants'''
+    '''Return a list of restaurants name'''
     return {
-        "restaurants": list(restaurants.keys())
+        "restaurants": [r['name'] for r in restaurants.values()]
     }
 
 
