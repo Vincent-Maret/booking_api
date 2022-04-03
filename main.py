@@ -1,3 +1,4 @@
+'''An api to manage booking for fake restaurants'''
 from typing import List, Set, Dict, Tuple, Literal, TypedDict, get_args
 import re
 from werkzeug.exceptions import HTTPException
