@@ -4,8 +4,9 @@ import re
 from werkzeug.exceptions import HTTPException
 from flask import Flask, abort, jsonify, request, Request
 
-PHONE_REGEX = re.compile(r"^\d{10}$")
-
+#######################################
+# Custom types
+#######################################
 RestaurantId = Literal['coin_moldu',
                        'falafel_fix',
                        'station_ramen',
@@ -33,9 +34,16 @@ class RestaurantData(TypedDict):
     bookings: List[Booking]
 
 
+#######################################
+# Constants
+#######################################
 SLOTS: Set[str] = {'19h', '19h30', '20h', '20h30', '21h', '21h30'}
 RESTAURANT_IDS = get_args(RestaurantId)
+PHONE_REGEX = re.compile(r"^\d{10}$")
 
+#######################################
+# Data
+#######################################
 restaurants: Dict[RestaurantId, RestaurantData] = {}
 
 for rid in RESTAURANT_IDS:
@@ -46,6 +54,9 @@ for rid in RESTAURANT_IDS:
     }
 
 
+#######################################
+# Helpers
+#######################################
 def check_dto(request: Request) -> Tuple[str, str]:
     '''Raise an error if given dto is malformed. '''
     if not isinstance(request.json, dict):
@@ -66,6 +77,9 @@ def check_dto(request: Request) -> Tuple[str, str]:
     return (name, phone)
 
 
+#######################################
+# API
+#######################################
 app = Flask(__name__)
 
 
