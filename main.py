@@ -1,7 +1,7 @@
 from typing import List, Set, Dict, Tuple, Optional, Union, Literal, TypedDict, get_args
 import re
 from werkzeug.exceptions import HTTPException
-from flask import Flask, abort, jsonify, request
+from flask import Flask, abort, jsonify, request, Request
 
 PHONE_REGEX = re.compile(r"^\d{10}$")
 
@@ -47,6 +47,30 @@ for rid in RESTAURANT_IDS:
 app = Flask(__name__)
 
 
+def check_dto(r_id: RestaurantId, slot: str, request: Request) -> Tuple[str, str]:
+    '''Raise an error if given dto is malformed'''
+    if not r_id in RESTAURANT_IDS:
+        abort(404, 'Restaurant id {} do not exist'.format(r_id))
+    elif not slot in restaurants[r_id]['slots']:
+        abort(400, 'Slot {} is not available'.format(slot))
+    elif not isinstance(request.json, dict):
+        abort(400, 'Request format must be json')
+    elif not 'name' in request.json:
+        abort(400, 'A name must be given')
+    elif not 'phone' in request.json:
+        abort(400, 'A phone must be given')
+
+    name = request.json['name']
+    phone = request.json['phone']
+
+    if not isinstance(name, str) or len(name) == 0:
+        abort(400, 'Malformated name')
+    elif not isinstance(phone, str) or not PHONE_REGEX.match(phone):
+        abort(400, 'Malformated phone')
+
+    return (name, phone)
+
+
 @app.errorhandler(Exception)
 def handle_error(error):
     '''Serialize all exceptions to JSON'''
@@ -76,24 +100,7 @@ def get_restaurant_slots(r_id: RestaurantId) -> Dict[str, List[str]]:
 @app.route('/restaurant/<r_id>/book/<slot>', methods=['POST'])
 def book_slot(r_id: RestaurantId, slot: str) -> str:
     '''Book given slot for given restaurant'''
-    if not r_id in RESTAURANT_IDS:
-        abort(404, 'Restaurant id {} do not exist'.format(r_id))
-    elif not slot in restaurants[r_id]['slots']:
-        abort(400, 'Slot {} is not available'.format(slot))
-    elif not isinstance(request.json, dict):
-        abort(400, 'Request format must be json')
-    elif not 'name' in request.json:
-        abort(400, 'A name must be given')
-    elif not 'phone' in request.json:
-        abort(400, 'A phone must be given')
-
-    name = request.json['name']
-    phone = request.json['phone']
-
-    if not isinstance(name, str) or len(name) == 0:
-        abort(400, 'Malformated name')
-    elif not isinstance(phone, str) or not PHONE_REGEX.match(phone):
-        abort(400, 'Malformated phone')
+    name, phone = check_dto(r_id, slot, request)
 
     restaurants[r_id]['bookings'].append(
         {'slot': slot, 'name': name, 'phone': phone})
