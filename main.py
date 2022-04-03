@@ -49,7 +49,6 @@ app = Flask(__name__)
 
 def check_dto(request: Request) -> Tuple[str, str]:
     '''Raise an error if given dto is malformed. '''
-
     if not isinstance(request.json, dict):
         abort(400, 'Request format must be json')
     elif not 'name' in request.json:
