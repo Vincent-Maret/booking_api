@@ -34,12 +34,38 @@ class RestaurantData(TypedDict):
     bookings: List[Booking]
 
 
+class Hateoas(TypedDict):
+    '''HATEOAS item type'''
+    href: str
+    rel: str
+    method: Literal['GET', 'POST', 'PUT', 'DELETE']
+
+
+class RestaurantListRes(TypedDict):
+    '''Return type of get_restaurant_list'''
+    restaurants: List[str]
+    links: List[Hateoas]
+
+
+class RestaurantSlotsRes(TypedDict):
+    '''Return type of get_restaurant_slots'''
+    slots: List[str]
+    links: List[Hateoas]
+
+
+class BookingRes(TypedDict):
+    '''Return type of get_restaurant_slots'''
+    message: str
+    links: List[Hateoas]
+
+
 #######################################
 # Constants
 #######################################
 SLOTS: Set[str] = {'19h', '19h30', '20h', '20h30', '21h', '21h30'}
 RESTAURANT_IDS = get_args(RestaurantId)
 PHONE_REGEX = re.compile(r"^\d{10}$")
+BASE_URL = 'http://localhost:8080'
 
 #######################################
 # Data
@@ -93,24 +119,36 @@ def handle_error(error):
 
 
 @app.route('/restaurants', methods=['GET'])
-def get_restaurant_list() -> Dict[str, List[str]]:
+def get_restaurant_list() -> RestaurantListRes:
     '''Return a list of restaurants name'''
     return {
-        "restaurants": [r['name'] for r in restaurants.values()]
+        "restaurants": [r['name'] for r in restaurants.values()],
+        "links": [{
+            'rel': 'Retrieve slots for {}'.format(r_id),
+            'method': 'GET',
+            'href': '{}/restaurant/{}/availableSlots'.format(BASE_URL, r_id)
+        } for r_id in RESTAURANT_IDS]
     }
 
 
 @app.route('/restaurant/<r_id>/availableSlots', methods=['GET'])
-def get_restaurant_slots(r_id: RestaurantId) -> Dict[str, List[str]]:
+def get_restaurant_slots(r_id: RestaurantId) -> RestaurantSlotsRes:
     '''Return available slots for given restaurant'''
     if not r_id in RESTAURANT_IDS:
         abort(404, 'Restaurant id {} do not exist'.format(r_id))
 
-    return {'slots': list(restaurants[r_id]["slots"])}
+    return {
+        'slots': list(restaurants[r_id]["slots"]),
+        'links': [{
+            'rel': 'Book slot {}'.format(slot),
+            'method': 'POST',
+            'href': '{}/restaurant/{}/book/{}'.format(BASE_URL, r_id, slot)
+        } for slot in restaurants[r_id]["slots"]]
+    }
 
 
 @app.route('/restaurant/<r_id>/book/<slot>', methods=['POST'])
-def book(r_id: RestaurantId, slot: str) -> str:
+def book(r_id: RestaurantId, slot: str) -> BookingRes:
     '''Book given slot for given restaurant'''
     if not r_id in RESTAURANT_IDS:
         abort(404, 'Restaurant id {} do not exist'.format(r_id))
@@ -123,11 +161,25 @@ def book(r_id: RestaurantId, slot: str) -> str:
         {'slot': slot, 'name': name, 'phone': phone})
     restaurants[r_id]['slots'].remove(slot)
 
-    return 'Slot {} booked'.format(slot)
+    return {
+        'message': 'Slot {} booked'.format(slot),
+        'links': [
+            {
+                'rel': 'Update booking for {} at {}'.format(slot, r_id),
+                'method': 'PUT',
+                'href': '{}/restaurant/{}/book/{}'.format(BASE_URL, r_id, slot)
+            },
+            {
+                'rel': 'Delete booking for {} at {}'.format(slot, r_id),
+                'method': 'DELETE',
+                'href': '{}/restaurant/{}/book/{}'.format(BASE_URL, r_id, slot)
+            }
+        ]
+    }
 
 
 @app.route('/restaurant/<r_id>/book/<slot>', methods=['PUT'])
-def update_booking(r_id: RestaurantId, slot: str) -> str:
+def update_booking(r_id: RestaurantId, slot: str) -> BookingRes:
     '''Book given slot for given restaurant'''
     if not r_id in RESTAURANT_IDS:
         abort(404, 'Restaurant id {} do not exist'.format(r_id))
@@ -144,11 +196,25 @@ def update_booking(r_id: RestaurantId, slot: str) -> str:
     restaurants[r_id]['bookings'].append(
         {'slot': slot, 'name': name, 'phone': phone})
 
-    return 'Booking on Slot {} updated'.format(slot)
+    return {
+        'message': 'Booking on Slot {} updated'.format(slot),
+        'links': [
+            {
+                'rel': 'Update booking for {} at {}'.format(slot, r_id),
+                'method': 'PUT',
+                'href': '{}/restaurant/{}/book/{}'.format(BASE_URL, r_id, slot)
+            },
+            {
+                'rel': 'Delete booking for {} at {}'.format(slot, r_id),
+                'method': 'DELETE',
+                'href': '{}/restaurant/{}/book/{}'.format(BASE_URL, r_id, slot)
+            }
+        ]
+    }
 
 
 @app.route('/restaurant/<r_id>/book/<slot>', methods=['DELETE'])
-def delete_booking(r_id: RestaurantId, slot: str) -> str:
+def delete_booking(r_id: RestaurantId, slot: str) -> BookingRes:
     '''Delete booking on given slot for given restaurant and make it available again.'''
     if not r_id in RESTAURANT_IDS:
         abort(404, 'Restaurant id {} do not exist'.format(r_id))
@@ -163,7 +229,16 @@ def delete_booking(r_id: RestaurantId, slot: str) -> str:
     del restaurants[r_id]['bookings'][booking_index]
     restaurants[r_id]['slots'].add(slot)
 
-    return 'Booking deleted'
+    return {
+        'message': 'Booking on Slot {} deleted'.format(slot),
+        'links': [
+            {
+                'rel': 'Get restaurant list',
+                'method': 'GET',
+                'href': '{}/restaurants'.format(BASE_URL)
+            },
+        ]
+    }
 
 
 if __name__ == '__main__':
