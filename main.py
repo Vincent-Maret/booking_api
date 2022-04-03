@@ -1,4 +1,4 @@
-from typing import List, Set, Dict, Tuple, Optional, Union, Literal, TypedDict, get_args
+from typing import List, Set, Dict, Tuple, Literal, TypedDict, get_args
 import re
 from werkzeug.exceptions import HTTPException
 from flask import Flask, abort, jsonify, request, Request
