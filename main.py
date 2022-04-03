@@ -1,6 +1,6 @@
 from typing import List, Set, Dict, Tuple, Optional, Union, Literal, TypedDict, get_args
-from flask import Flask, abort
-
+from flask import Flask, abort, jsonify
+from werkzeug.exceptions import HTTPException
 
 RestaurantId = Literal['coin_moldu',
                        'falafel_fix',
@@ -33,6 +33,15 @@ for rid in RESTAURANT_IDS:
     }
 
 app = Flask(__name__)
+
+
+@app.errorhandler(Exception)
+def handle_error(error):
+    '''Serialize all exceptions to JSON'''
+    code = 500
+    if isinstance(error, HTTPException):
+        code = error.code
+    return jsonify(error=str(error)), code
 
 
 @app.route('/restaurants', methods=['GET'])
