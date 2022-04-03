@@ -48,12 +48,9 @@ app = Flask(__name__)
 
 
 def check_dto(r_id: RestaurantId, slot: str, request: Request) -> Tuple[str, str]:
-    '''Raise an error if given dto is malformed'''
-    if not r_id in RESTAURANT_IDS:
-        abort(404, 'Restaurant id {} do not exist'.format(r_id))
-    elif not slot in restaurants[r_id]['slots']:
-        abort(400, 'Slot {} is not available'.format(slot))
-    elif not isinstance(request.json, dict):
+    '''Raise an error if given dto is malformed. '''
+
+    if not isinstance(request.json, dict):
         abort(400, 'Request format must be json')
     elif not 'name' in request.json:
         abort(400, 'A name must be given')
@@ -98,8 +95,13 @@ def get_restaurant_slots(r_id: RestaurantId) -> Dict[str, List[str]]:
 
 
 @app.route('/restaurant/<r_id>/book/<slot>', methods=['POST'])
-def book_slot(r_id: RestaurantId, slot: str) -> str:
+def book(r_id: RestaurantId, slot: str) -> str:
     '''Book given slot for given restaurant'''
+    if not r_id in RESTAURANT_IDS:
+        abort(404, 'Restaurant id {} do not exist'.format(r_id))
+    elif not slot in restaurants[r_id]['slots']:
+        abort(400, 'Slot {} is not available'.format(slot))
+
     name, phone = check_dto(r_id, slot, request)
 
     restaurants[r_id]['bookings'].append(
